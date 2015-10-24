@@ -100,7 +100,13 @@ sctp_init(void)
 	InitializeCriticalSection(&accept_mtx);
 #else
 	pthread_cond_init(&accept_cond, NULL);
-	pthread_mutex_init(&accept_mtx, NULL);
+
+	pthread_mutexattr_t attr;
+	pthread_mutexattr_init(&attr);
+	pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK);
+	pthread_mutex_init(&accept_mtx, &attr);
+	pthread_mutexattr_destroy(&attr);
+
 #endif
 #endif
 	/* Initialize and modify the sysctled variables */

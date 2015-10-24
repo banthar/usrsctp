@@ -250,8 +250,8 @@ extern userland_cond_t accept_cond;
 extern userland_mutex_t accept_mtx;
 extern userland_cond_t accept_cond;
 #define	ACCEPT_LOCK_ASSERT()		KASSERT(pthread_mutex_trylock(&accept_mtx) == EBUSY, ("%s: accept_mtx not locked", __func__))
-#define	ACCEPT_LOCK()			(void)pthread_mutex_lock(&accept_mtx)
-#define	ACCEPT_UNLOCK()			(void)pthread_mutex_unlock(&accept_mtx)
+#define	ACCEPT_LOCK()			{if(pthread_mutex_lock(&accept_mtx)!=0)printf("invalid lock in %s:%d\n",__FILE__,__LINE__);}
+#define	ACCEPT_UNLOCK()			{if(pthread_mutex_unlock(&accept_mtx)!=0)printf("invalid unlock in %s:%d\n",__FILE__,__LINE__);}
 #define	ACCEPT_UNLOCK_ASSERT()	 do{                                                            \
 	KASSERT(pthread_mutex_trylock(&accept_mtx) == 0, ("%s: accept_mtx  locked", __func__)); \
 	(void)pthread_mutex_unlock(&accept_mtx);                                                \
